@@ -11,15 +11,7 @@ const getPizzaList = () => {
     });
 };
 
-const printPizza = ({
-  _id,
-  pizzaName,
-  toppings,
-  size,
-  commentCount,
-  createdBy,
-  createdAt,
-}) => {
+const printPizza = ({ _id, pizzaName, toppings, size, commentCount, createdBy, createdAt }) => {
   const pizzaCard = `
     <div class="col-12 col-lg-6 flex-row">
       <div class="card w-100 flex-column">
