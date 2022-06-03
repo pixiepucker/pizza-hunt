@@ -11,16 +11,15 @@ let pizzaId;
 
 function getPizza() {
   // get id of pizza
-  const searchParams = new URLSearchParams(
-    document.location.search.substring(1)
-  );
+  const searchParams = new URLSearchParams(document.location.search.substring(1));
   const pizzaId = searchParams.get('id');
 
   // get pizzaInfo
   fetch(`/api/pizzas/${pizzaId}`)
     .then(response => {
-      //check for a 4xx or 5xx err from server
+      console.log(response);
       if (!response.ok) {
+        console.log('hi');
         throw new Error({ message: 'Something went wrong!' });
       }
 
@@ -29,7 +28,7 @@ function getPizza() {
     .then(printPizza)
     .catch(err => {
       console.log(err);
-      alert('Cannot find a pizza with this id! Taking you back now...');
+      alert('Cannot find a pizza with this id! Taking you back.');
       window.history.back();
     });
 }
@@ -39,43 +38,30 @@ function printPizza(pizzaData) {
 
   pizzaId = pizzaData._id;
 
-  const { pizzaName, createdBy, createdAt, size, toppings, comments } =
-    pizzaData;
+  const { pizzaName, createdBy, createdAt, size, toppings, comments } = pizzaData;
 
   $pizzaName.textContent = pizzaName;
   $createdBy.textContent = createdBy;
   $createdAt.textContent = createdAt;
   $size.textContent = size;
   $toppingsList.innerHTML = toppings
-    .map(
-      topping => `<span class="col-auto m-2 text-center btn">${topping}</span>`
-    )
+    .map(topping => `<span class="col-auto m-2 text-center btn">${topping}</span>`)
     .join('');
 
   if (comments && comments.length) {
     comments.forEach(printComment);
   } else {
-    $commentSection.innerHTML =
-      '<h4 class="bg-dark p-3 rounded">No comments yet!</h4>';
+    $commentSection.innerHTML = '<h4 class="bg-dark p-3 rounded">No comments yet!</h4>';
   }
 }
 
 function printComment(comment) {
   // make div to hold comment and subcomments
   const commentDiv = document.createElement('div');
-  commentDiv.classList.add(
-    'my-2',
-    'card',
-    'p-2',
-    'w-100',
-    'text-dark',
-    'rounded'
-  );
+  commentDiv.classList.add('my-2', 'card', 'p-2', 'w-100', 'text-dark', 'rounded');
 
   const commentContent = `
-      <h5 class="text-dark">${comment.writtenBy} commented on ${
-    comment.createdAt
-  }:</h5>
+      <h5 class="text-dark">${comment.writtenBy} commented on ${comment.createdAt}:</h5>
       <p>${comment.commentBody}</p>
       <div class="bg-dark ml-3 p-2 rounded" >
         ${
@@ -126,25 +112,23 @@ function handleNewCommentSubmit(event) {
 
   const formData = { commentBody, writtenBy };
 
-  // get pizzaInfo
   fetch(`/api/comments/${pizzaId}`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(formData),
+    body: JSON.stringify(formData)
   })
     .then(response => {
-      //check for a 4xx or 5xx err from server
       if (!response.ok) {
-        throw new Error({ message: 'Something went wrong!' });
+        throw new Error('Something went wrong!');
       }
       response.json();
     })
     .then(commentResponse => {
       console.log(commentResponse);
-      location.reload();
+      // location.reload();
     })
     .catch(err => {
       console.log(err);
@@ -169,18 +153,17 @@ function handleNewReplySubmit(event) {
 
   const formData = { writtenBy, replyBody };
 
-  // PUT new replies
   fetch(`/api/comments/${pizzaId}/${commentId}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(formData),
+    body: JSON.stringify(formData)
   })
     .then(response => {
       if (!response.ok) {
-        throw new Error({ message: 'Something went wrong!' });
+        throw new Error('Something went wrong!');
       }
       response.json();
     })
@@ -193,7 +176,7 @@ function handleNewReplySubmit(event) {
     });
 }
 
-$backBtn.addEventListener('click', function () {
+$backBtn.addEventListener('click', function() {
   window.history.back();
 });
 
